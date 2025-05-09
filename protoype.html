@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leon HealthBuddy</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <style>
+    body {
+      background: linear-gradient(to right, #1f1f1f, #2e2e2e);
+      color: white;
+    }
+    .lion-logo {
+      width: 60px;
+      height: 60px;
+    }
+  </style>
+</head>
+
+<body class="font-sans dark:bg-gray-900 dark:text-white" id="mainBody">
+  <header class="flex items-center justify-between p-4 border-b border-gray-700">
+    <div class="flex items-center space-x-3">
+      <img src="lion-logo.png" alt="Lion Logo" class="lion-logo">
+      <h1 class="text-3xl font-bold">Leon HealthBuddy</h1>
+    </div>
+    <div class="flex space-x-4">
+      <button id="darkToggle" class="bg-orange-500 px-3 py-1 rounded hover:bg-orange-600">Toggle Dark Mode</button>
+      <button id="voiceButton" class="bg-green-500 px-3 py-1 rounded hover:bg-green-600">Voice Mode</button>
+    </div>
+  </header>
+
+  <main class="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+    <section class="bg-gray-800 p-4 rounded-2xl shadow-lg">
+      <h2 class="text-xl font-semibold mb-2">Hello Boss!</h2>
+      <p id="welcomeText"></p>
+    </section>
+
+    <section class="bg-gray-800 p-4 rounded-2xl shadow-lg">
+      <h3 class="text-lg font-semibold mb-3">Health Tools</h3>
+      <div class="space-y-2">
+        <button class="w-full bg-orange-600 hover:bg-orange-700 p-2 rounded-xl" onclick="calculateBMI()">BMI Calculator</button>
+        <button class="w-full bg-orange-600 hover:bg-orange-700 p-2 rounded-xl" onclick="analyzeBloodReport()">Blood Report Analyzer</button>
+        <button class="w-full bg-orange-600 hover:bg-orange-700 p-2 rounded-xl" onclick="showAdvice()">Personalized Advice</button>
+        <button class="w-full bg-orange-600 hover:bg-orange-700 p-2 rounded-xl" onclick="navigateTool('Nearby Doctors & Labs')">Nearby Doctors & Labs</button>
+        <button class="w-full bg-orange-600 hover:bg-orange-700 p-2 rounded-xl" onclick="navigateTool('Health History Tracker')">Health History Tracker</button>
+      </div>
+    </section>
+
+    <section class="bg-gray-800 p-4 rounded-2xl shadow-lg">
+      <h3 class="text-lg font-semibold mb-3">Types of Medicine</h3>
+      <div class="flex flex-wrap gap-3">
+        <span class="bg-yellow-500 text-black px-3 py-1 rounded-full">Allopathy</span>
+        <span class="bg-green-400 text-black px-3 py-1 rounded-full">Ayurvedic</span>
+        <span class="bg-blue-400 text-black px-3 py-1 rounded-full">Homeopathy</span>
+      </div>
+    </section>
+
+    <section class="bg-gray-800 p-4 rounded-2xl shadow-lg">
+      <h3 class="text-lg font-semibold mb-3">Daily Health Activities</h3>
+      <div class="flex justify-center">
+        <img src="exercise-animation.gif" alt="Exercise Animation" class="rounded-xl w-64">
+      </div>
+    </section>
+
+    <section class="bg-gray-800 p-4 rounded-2xl shadow-lg col-span-2">
+      <h3 class="text-lg font-semibold mb-3">Leon Console</h3>
+      <div id="consoleOutput" class="bg-black text-green-400 p-2 rounded h-64 overflow-y-auto font-mono text-sm">
+        Initializing Leon HealthBuddy systems...
+      </div>
+    </section>
+  </main>
+
+  <footer class="text-center text-sm text-gray-400 p-4 border-t border-gray-700">
+    &copy; 2025 Leon HealthBuddy. All rights reserved.
+  </footer>
+
+  <script>
+    const darkToggle = document.getElementById('darkToggle');
+    darkToggle.addEventListener('click', () => {
+      document.documentElement.classList.toggle('dark');
+    });
+
+    const msg = "Welcome to your intelligent health companion. Select an option below to begin.";
+    let i = 0;
+    function typeWriter() {
+      if (i < msg.length) {
+        document.getElementById("welcomeText").innerHTML += msg.charAt(i);
+        i++;
+        setTimeout(typeWriter, 30);
+      }
+    }
+    window.onload = () => {
+      typeWriter();
+      setTimeout(() => updateConsole("Hello Boss. Ready to assist you."), 1500);
+    };
+
+    function updateConsole(msg) {
+      const output = document.getElementById("consoleOutput");
+      output.innerHTML += `<div>> ${msg}</div>`;
+      output.scrollTop = output.scrollHeight;
+    }
+
+    const voiceButton = document.getElementById("voiceButton");
+    const synth = window.speechSynthesis;
+
+    voiceButton.addEventListener("click", () => {
+      const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+      recognition.lang = 'en-US';
+      recognition.start();
+      recognition.onresult = (event) => {
+        const command = event.results[0][0].transcript.toLowerCase();
+        const utterance = new SpeechSynthesisUtterance();
+
+        if (command.includes("bmi")) {
+          utterance.text = "Redirecting you to the BMI Calculator, Boss.";
+          calculateBMI();
+	} else if (command.includes("hello chatbot")) {
+          utterance.text = "Hello Boss!Hope your day is going fine!";
+        }
+	  else if (command.includes("introduce yourself")) {
+	  utterance.text = "This is Leo Chatbot! Version 1.4.8. My purpose is to serve you boss like an effective assistant.";
+	}
+	else if (command.includes("how can you help me")) {
+	  utterance.text = "Boss I am just a prototype assistant but still I am capable to provide effective help to you. I can analyze your blood pressure, provide advices and also provide medicine names.For that you need to use keywords like bmi,blood,advice.";
+	}
+	else if (command.includes("thanks bro")) {
+	  utterance.text = "This was my job boss! I am always ready to help and assist you. Enjoy your day boss";
+	}
+	else if (command.includes("leo")) {
+	  utterance.text = "Initializing Leo Chatbot.Getting all features and data ready.";
+	}
+
+        else if (command.includes("advice")) {
+          utterance.text = "Let me get your personalized advice ready.";
+          showAdvice();
+        }  else if (command.includes("blood")) {
+          utterance.text = "Let me get your pressure calculated!!.";
+          analyzeBloodReport();
+        } else {
+          utterance.text = "Sorry Boss, I didn't understand that.";
+        }
+        synth.speak(utterance);
+        updateConsole(`Voice command detected: "${command}"`);
+      };
+    });
+
+    function calculateBMI() {
+  let weightInput = prompt("Enter your weight in kg:");
+  let heightInput = prompt("Enter your height in meters:");
+
+  const weight = parseFloat(weightInput);
+  const height = parseFloat(heightInput);
+
+  if (isNaN(weight) || isNaN(height) || weight <= 0 || height <= 0) {
+    updateConsole("Invalid BMI input. Please enter positive numeric values.");
+    return;
+  }
+
+  const bmi = weight / (height * height);
+  let status = "";
+
+  if (bmi < 18.5) status = "Underweight";
+  else if (bmi < 24.9) status = "Normal";
+  else if (bmi <= 29.9) status = "Overweight";
+  else status = "Obese";
+
+  updateConsole(`Your BMI is ${bmi.toFixed(2)} (${status})`);
+}
+
+    function analyzeBloodReport() {
+      const systolic = parseInt(prompt("Enter your systolic blood pressure (e.g. 120):"));
+      const diastolic = parseInt(prompt("Enter your diastolic blood pressure (e.g. 80):"));
+      if (!systolic || !diastolic) return updateConsole("Invalid blood pressure input.");
+      let status = "";
+      if (systolic < 90 || diastolic < 60) status = "Low";
+      else if (systolic <= 120 && diastolic <= 80) status = "Normal";
+      else status = "High";
+      updateConsole(`Your blood pressure is ${systolic}/${diastolic} mmHg (${status})`);
+    }
+
+    function showAdvice() {
+      const diseases = {
+        "Diabetes": ["Metformin", "Glipizide", "Januvia", "Invokana", "Trulicity", "Basaglar", "Tresiba", "Lantus", "Amaryl", "Farxiga"],
+        "Hypertension": ["Lisinopril", "Amlodipine", "Hydrochlorothiazide", "Losartan", "Metoprolol", "Valsartan", "Enalapril", "Carvedilol", "Clonidine", "Nifedipine"],
+        "Asthma": ["Albuterol", "Fluticasone", "Salmeterol", "Montelukast", "Budesonide", "Formoterol", "Beclometasone", "Tiotropium", "Theophylline", "Zileuton"],
+        "Allergy": ["Loratadine", "Cetirizine", "Fexofenadine", "Levocetirizine", "Diphenhydramine", "Montelukast", "Desloratadine", "Olopatadine", "Hydroxyzine", "Chlorpheniramine"],
+        "Acidity": ["Pantoprazole", "Omeprazole", "Ranitidine", "Esomeprazole", "Rabeprazole", "Famotidine", "Sodium Bicarbonate", "Domperidone", "Sucralfate", "Alginates"],
+        "Thyroid": ["Levothyroxine", "Liothyronine", "Methimazole", "Propylthiouracil", "Iodine", "Beta-blockers", "Radioiodine", "Calcitonin", "Thyroid extract", "Cabergoline"],
+        "Cold": ["Paracetamol", "Phenylephrine", "Diphenhydramine", "Chlorpheniramine", "Cetirizine", "Ibuprofen", "Ambroxol", "Dextromethorphan", "Pseudoephedrine", "Guaifenesin"],
+        "Migraine": ["Sumatriptan", "Rizatriptan", "Ergotamine", "Amitriptyline", "Propranolol", "Topiramate", "Valproate", "Metoclopramide", "Naproxen", "Ibuprofen"],
+        "Back Pain": ["Ibuprofen", "Naproxen", "Paracetamol", "Cyclobenzaprine", "Diclofenac", "Tizanidine", "Methocarbamol", "Baclofen", "Tramadol", "Gabapentin"],
+        "Heart Disease": ["Aspirin", "Clopidogrel", "Atorvastatin", "Rosuvastatin", "Metoprolol", "Enalapril", "Losartan", "Nitroglycerin", "Amiodarone", "Warfarin"]
+      };
+      const input = prompt("Choose a disease from the following:\n" + Object.keys(diseases).join(", "));
+      const selected = Object.keys(diseases).find(d => d.toLowerCase() === input.toLowerCase());
+      if (selected) {
+        updateConsole(`Personalized advice for ${selected}`);
+        diseases[selected].forEach((med, i) => {
+          updateConsole(`[Allopathy] ${med}`);
+          updateConsole(`[Homeopathy] Homeo Alt ${i + 1}`);
+          updateConsole(`[Ayurvedic] Ayur Alt ${i + 1}`);
+        });
+        [
+          "Stay hydrated",
+          "Avoid processed foods",
+          "Exercise daily",
+          "Monitor your health regularly"
+        ].forEach(tip => updateConsole(`Diet Tip: ${tip}`));
+      } else {
+        updateConsole("Invalid disease name entered.");
+      }
+    }
+
+    function navigateTool(toolName) {
+      updateConsole(`Navigating to ${toolName}...`);
+      alert(`${toolName} will be opened soon.`);
+    }
+  </script>
+</body>
+
+</html>
